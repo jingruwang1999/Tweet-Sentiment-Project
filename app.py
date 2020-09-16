@@ -47,8 +47,6 @@ if not st.sidebar.checkbox("Close", True, key = '1'):
     st.markdown("### Tweets locations based on the time of day")
     st.markdown("%i tweets between %i:00 and %i:00" % (len(modified_data), hour, (hour+1)%24))
     st.map(modified_data)
-    if st.sidebar.checkbox("Show raw data", False):
-        st.writer(modified_data)
 
 st.sidebar.subheader("Breakdown airline tweets by sentiment")
 choice = st.sidebar.multiselect("Pick airlines", ("US Airways", "United", "American", "Virgin America"), key='0')
@@ -58,18 +56,3 @@ if len(choice) > 0:
     fig_choice = px.histogram(choice_data, x='airline', y='airline_sentiment', histfunc='count', color='airline',
     facet_col = 'airline_sentiment', labels={'airline_sentiment':'tweets'}, height=600, width=800)
     st.plotly_chart(fig_choice)
-
-st.sidebar.header("Word Cloud")
-word_sentiment = st.sidebar.radio('Display word cloud for what sentiment?', ('Positive', 'Neutral', 'Negative'))
-
-if not st.sidebar.checkbox("Close", True, key="3"):
-    st.header("Word cloud for %s sentiment" %(word_sentiment))
-    df = data[data['airline_sentiment']==word_sentiment]
-
-    words = ' '.join(df['text'])
-    processed_words = ' '.join([word for word in words if 'http' not in word and not word.startswith('@') and word != 'RT'])
-    wordcloud = wordcloud.WordCloud(stopwords=wordcloud.STOPWORDS, background_color='white', height=640, width = 800).generate(processed_words)
-    plt.imshow()
-    plt.xticks([])
-    plt.yticks([])
-    st.pyplot()
